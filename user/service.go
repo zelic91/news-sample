@@ -1,0 +1,106 @@
+package user
+
+import (
+	"context"
+	"log"
+	"news/db/postgres/dbgen"
+)
+
+type CreateUserParams struct {
+	Email          *string
+	FirstName      *string
+	LastName       *string
+	PasswordHashed *string
+	PasswordSalt   *string
+	Status         *string
+	Username       string
+}
+
+type UpdateUserParams struct {
+	ID             int64
+	Email          *string
+	FirstName      *string
+	LastName       *string
+	PasswordHashed *string
+	PasswordSalt   *string
+	Status         *string
+	Username       string
+}
+
+type service struct {
+	repo *Repo
+}
+
+func NewService(
+	repo *Repo,
+) *service {
+	return &service{
+		repo: repo,
+	}
+}
+
+func (s *service) CreateUser(ctx context.Context, params CreateUserParams) (*dbgen.User, error) {
+	res, err := s.repo.Create(
+		ctx,
+		params.Email,
+		params.FirstName,
+		params.LastName,
+		params.PasswordHashed,
+		params.PasswordSalt,
+		params.Status,
+		params.Username,
+	)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (s *service) FindByUsername(ctx context.Context, username string) (*dbgen.User, error) {
+	res, err := s.repo.FindByUsername(ctx, username)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return res, nil
+}
+
+/*
+func (s *service) UpdateUser(ctx context.Context, params UpdateUserParams) (*dbgen.User, error) {
+	res, err := s.repo.Update(
+		ctx,
+		params.ID,
+		params.Email,
+		params.FirstName,
+		params.LastName,
+		params.PasswordHashed,
+		params.PasswordSalt,
+		params.Status,
+		params.Username,
+	)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (s *service) DeleteUser(ctx context.Context, id int64) error {
+	err := s.repo.Delete(
+		ctx,
+		id,
+	)
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+*/

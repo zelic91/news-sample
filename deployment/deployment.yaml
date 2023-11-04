@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news
+spec:
+  selector:
+    matchLabels:
+      app: news
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: news
+    spec:
+      containers:
+      - image: zelic91/news
+        imagePullPolicy: Always
+        name: news
+        ports:
+        - containerPort: 3000

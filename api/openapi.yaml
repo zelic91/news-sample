@@ -1,0 +1,301 @@
+
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Main API
+  description: Main API Description
+paths:
+  /auth/signin:
+    post:
+      summary: Sign in
+      operationId: SignIn
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInRequest"
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /auth/signup:
+    post:
+      summary: Sign up
+      operationId: SignUp
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpRequest"
+      responses:
+        "201":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /categories:
+    get:
+      summary: Get all categories
+      operationId: GetCategories
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCategoriesBody"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      summary: Create a new category
+      operationId: CreateCategory
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategory"
+      responses:
+        "201":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /devices:
+    post:
+      summary: Register new device token
+      operationId: CreateDevice
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDevice"
+      responses:
+        "201":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /objects:
+    get:
+      summary: Get all objects
+      operationId: GetObjects
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetObjectsBody"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      summary: Create a new object
+      operationId: CreateObject
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateObject"
+      responses:
+        "201":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+
+  responses:
+    Default:
+      description: Success response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DefaultResponse"
+
+    UnauthorizedError:
+      description: API key is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        error:
+          type: string
+        code:
+          type: integer
+        message:
+          type: string
+
+    AuthResponse:
+      type: object
+      required:
+        - accessToken
+      properties:
+        accessToken:
+          type: string
+
+    DefaultResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          default: Success
+    CreateCategory:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        description:
+          type: string
+        title:
+          type: string
+    CreateDevice:
+      type: object
+      required:
+        - deviceToken
+        - platform
+      properties:
+        deviceToken:
+          type: string
+        platform:
+          type: string
+    CreateObject:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        content:
+          type: string
+        title:
+          type: string
+    GetCategoriesBody:
+      type: object
+      required:
+      properties:
+    GetCategoryBody:
+      type: object
+      required:
+      properties:
+    GetObjectBody:
+      type: object
+      required:
+      properties:
+    GetObjectsBody:
+      type: object
+      required:
+      properties:
+    SignInRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        password:
+          type: string
+        username:
+          type: string
+    SignUpRequest:
+      type: object
+      required:
+        - username
+        - password
+        - password_confirmation
+      properties:
+        password:
+          type: string
+        password_confirmation:
+          type: string
+        username:
+          type: string
+    User:
+      type: object
+      required:
+        - username
+        - email
+      properties:
+        email:
+          type: string
+        username:
+          type: string
